@@ -1,0 +1,29 @@
+logging:
+  level:
+    cc:
+      vivp:
+        bankrupt: DEBUG
+    root: INFO
+server:
+  port: 58080
+  servlet:
+    context-path: /bankrupt
+spring:
+  datasource:
+    password: bankrupt
+    testWhileIdle: true
+    url: jdbc:mysql://0.0.0.0:3306/bankrupt?useSSL=false
+    username: root
+    validationQuery: SELECT 1
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  jackson:
+    default-property-inclusion: NON_NULL
+  kafka:
+    bootstrap-servers: 0.0.0.0:9092
+
+kafka:
+  payments:
+    topic-name: payments-topic

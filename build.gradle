@@ -1,0 +1,137 @@
+
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE"
+  }
+}
+
+plugins {
+  id "io.freefair.lombok" version "3.2.1" apply false
+}
+
+def versions = [
+  h2: "1.4.199",
+  jackson: "2.9.8",
+  javaxPersistence: "2.2",
+  javaxValidation: "2.0.1.Final",
+  jsonPath: "2.4.0",
+  junitJupiter: "5.3.2",
+  junitPlatform: "1.5.0-M1",
+  mockito: "2.20.1",
+  mysqlConnector: "8.0.16",
+  springBoot: "2.1.4.RELEASE",
+  springDataJpa: "2.1.7.RELEASE",
+  springFramework: "5.1.6.RELEASE",
+  springKafka: "2.2.6.RELEASE"
+]
+
+def libraries = [
+  h2: "com.h2database:h2:$versions.h2",
+  jackson_datatype_jsr310: "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$versions.jackson",
+  javax_persistence: "javax.persistence:javax.persistence-api:$versions.javaxPersistence",
+  javax_validation: "javax.validation:validation-api:$versions.javaxValidation",
+  json_path: "com.jayway.jsonpath:json-path:$versions.jsonPath",
+  junit_jupiter_api: "org.junit.jupiter:junit-jupiter-api:$versions.junitJupiter",
+  junit_jupiter_engine: "org.junit.jupiter:junit-jupiter-engine:$versions.junitJupiter",
+  junit_platform_launcher: "org.junit.platform:junit-platform-launcher:$versions.junitPlatform",
+  junit_platform_runner: "org.junit.platform:junit-platform-runner:$versions.junitPlatform",
+  mockito: "org.mockito:mockito-junit-jupiter:$versions.mockito",
+  mysql_connector_java: "mysql:mysql-connector-java:$versions.mysqlConnector",
+  spring_boot_start_data_jpa: "org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
+  spring_boot_starter_test: "org.springframework.boot:spring-boot-starter-test:$versions.springBoot",
+  spring_boot_starter_web: "org.springframework.boot:spring-boot-starter-web:$versions.springBoot",
+  spring_context: "org.springframework:spring-context:$versions.springFramework",
+  spring_data_jpa: "org.springframework.data:spring-data-jpa:$versions.springDataJpa",
+  spring_kafka: "org.springframework.kafka:spring-kafka:$versions.springKafka",
+  spring_web: "org.springframework:spring-web:$versions.springFramework"
+]
+
+subprojects {
+
+  apply plugin: "java"
+
+  version "1.0.0-SNAPSHOT"
+  group "cc.vivp.payments"
+
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+
+  repositories {
+    jcenter()
+  }
+}
+
+project(":service-payment-producer") {
+  apply plugin: "java"
+  apply plugin: "org.springframework.boot"
+  apply plugin: "io.spring.dependency-management"
+
+  bootJar {
+    baseName = 'service-payment-producer'
+    version =  '1.0.0-SNAPSHOT'
+  }
+
+  dependencies {
+    implementation project(":domain-models")
+    implementation libraries.spring_boot_starter_web
+    implementation libraries.spring_boot_start_data_jpa
+    implementation libraries.spring_kafka
+    runtime libraries.mysql_connector_java
+    testImplementation libraries.spring_boot_starter_test
+    testImplementation libraries.spring_context
+    testImplementation libraries.junit_jupiter_api
+    testRuntime libraries.junit_jupiter_engine
+    testImplementation libraries.json_path
+    testRuntime libraries.h2
+    testImplementation libraries.mockito
+  }
+
+  test {
+    useJUnitPlatform()
+  }
+
+}
+
+project(":worker-payment-consumer") {
+  apply plugin: "java"
+  apply plugin: "org.springframework.boot"
+  apply plugin: "io.spring.dependency-management"
+
+  bootJar {
+    baseName = 'worker-payment-consumer'
+    version =  '0.0.1-SNAPSHOT'
+  }
+
+  dependencies {
+    implementation project(":domain-models")
+    implementation libraries.spring_boot_starter_web
+    implementation libraries.spring_boot_start_data_jpa
+    implementation libraries.spring_kafka
+    runtime libraries.mysql_connector_java
+    testImplementation libraries.spring_boot_starter_test
+    testImplementation libraries.spring_context
+    testImplementation libraries.junit_jupiter_api
+    testRuntime libraries.junit_jupiter_engine
+  }
+
+  test {
+    useJUnitPlatform()
+  }
+
+}
+
+project(":domain-models") {
+
+  apply plugin: "java"
+  apply plugin: "io.freefair.lombok"
+
+  dependencies {
+    implementation libraries.javax_validation
+    implementation libraries.spring_web
+    implementation libraries.jackson_datatype_jsr310
+    implementation libraries.javax_persistence
+  }
+}
