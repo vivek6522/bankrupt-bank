@@ -12,18 +12,20 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import cc.vivp.bankrupt.contracts.repository.ContractRepository;
 import cc.vivp.bankrupt.payments.service.IPaymentDispatcher;
 import cc.vivp.bankrupt.payments.service.impl.KafkaPaymentDispatcher;
+import cc.vivp.bankrupt.repositories.ContractRepository;
+import cc.vivp.bankrupt.repositories.PaymentRepository;
 
 @Configuration
 public class ConfigurationAndBeansProvider {
 
   @Bean
   IPaymentDispatcher providePaymentDispatcherIntegration(ContractRepository contractRepository,
-      KafkaTemplate<String, Object> kafkaTemplate,
+      PaymentRepository paymentRepository, KafkaTemplate<String, Object> kafkaTemplate,
       @Value("${kafka.payments.topic-name}") String topicName) {
-    return new KafkaPaymentDispatcher(contractRepository, kafkaTemplate, topicName);
+    return new KafkaPaymentDispatcher(contractRepository, paymentRepository, kafkaTemplate,
+        topicName);
   }
 
   @Bean

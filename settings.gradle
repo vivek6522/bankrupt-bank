@@ -1,1 +1,1 @@
-include 'service-payment-producer', 'worker-payment-consumer', 'domain-models'
+include 'service-payment-producer', 'worker-payment-consumer', 'domain-models', 'component-data-repositories'

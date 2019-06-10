@@ -40,7 +40,7 @@ def libraries = [
   junit_platform_runner: "org.junit.platform:junit-platform-runner:$versions.junitPlatform",
   mockito: "org.mockito:mockito-junit-jupiter:$versions.mockito",
   mysql_connector_java: "mysql:mysql-connector-java:$versions.mysqlConnector",
-  spring_boot_start_data_jpa: "org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
+  spring_boot_starter_data_jpa: "org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
   spring_boot_starter_test: "org.springframework.boot:spring-boot-starter-test:$versions.springBoot",
   spring_boot_starter_web: "org.springframework.boot:spring-boot-starter-web:$versions.springBoot",
   spring_context: "org.springframework:spring-context:$versions.springFramework",
@@ -76,8 +76,9 @@ project(":service-payment-producer") {
 
   dependencies {
     implementation project(":domain-models")
+    implementation project(":component-data-repositories")
     implementation libraries.spring_boot_starter_web
-    implementation libraries.spring_boot_start_data_jpa
+    implementation libraries.spring_boot_starter_data_jpa
     implementation libraries.spring_kafka
     runtime libraries.mysql_connector_java
     testImplementation libraries.spring_boot_starter_test
@@ -107,8 +108,9 @@ project(":worker-payment-consumer") {
 
   dependencies {
     implementation project(":domain-models")
+    implementation project(":component-data-repositories")
     implementation libraries.spring_boot_starter_web
-    implementation libraries.spring_boot_start_data_jpa
+    implementation libraries.spring_boot_starter_data_jpa
     implementation libraries.spring_kafka
     runtime libraries.mysql_connector_java
     testImplementation libraries.spring_boot_starter_test
@@ -121,6 +123,16 @@ project(":worker-payment-consumer") {
     useJUnitPlatform()
   }
 
+}
+
+project(":component-data-repositories") {
+
+  apply plugin: "java"
+
+  dependencies {
+  	implementation project(":domain-models")
+    implementation libraries.spring_data_jpa
+  }
 }
 
 project(":domain-models") {

@@ -1,11 +1,11 @@
 package cc.vivp.bankrupt.payments.service.impl;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,10 +18,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
 import cc.vivp.bankrupt.contracts.models.db.Contract;
-import cc.vivp.bankrupt.contracts.repository.ContractRepository;
 import cc.vivp.bankrupt.payments.models.api.Payment;
 import cc.vivp.bankrupt.payments.models.api.PaymentDispatchException;
 import cc.vivp.bankrupt.payments.service.IPaymentDispatcher;
+import cc.vivp.bankrupt.repositories.ContractRepository;
+import cc.vivp.bankrupt.repositories.PaymentRepository;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Kafka payment dispatcher")
@@ -32,13 +33,16 @@ public class KafkaPaymentDispatcherTest {
   @Mock
   private ContractRepository contractRepository;
   @Mock
+  private PaymentRepository paymentRepository;
+  @Mock
   private KafkaTemplate<String, Object> kafkaTemplate;
 
   private IPaymentDispatcher underTest;
 
   @BeforeEach
   void setup() {
-    underTest = new KafkaPaymentDispatcher(contractRepository, kafkaTemplate, TOPIC_NAME);
+    underTest = new KafkaPaymentDispatcher(contractRepository, paymentRepository, kafkaTemplate,
+        TOPIC_NAME);
   }
 
   @Test
@@ -53,12 +57,18 @@ public class KafkaPaymentDispatcherTest {
         Optional.of(new Contract(debtorIban, "current", BigDecimal.TEN, "123"));
     when(contractRepository.findById(debtorIban)).thenReturn(contract);
 
+    when(paymentRepository.save(any(cc.vivp.bankrupt.payments.models.db.Payment.class)))
+        .thenReturn(new cc.vivp.bankrupt.payments.models.db.Payment(payment.getId(),
+            payment.getDebtorIban(), payment.getCreditorIban(), payment.getAmount(),
+            payment.getDescription(), payment.getCreditorName()));
+
     ListenableFuture<SendResult<String, Object>> listenableFuture = null;
     when(kafkaTemplate.send(anyString(), any(Payment.class))).thenReturn(listenableFuture);
 
     underTest.dispatchPayment(payment);
 
     verify(contractRepository, times(1)).findById(anyString());
+    verify(paymentRepository, times(1)).save(any(cc.vivp.bankrupt.payments.models.db.Payment.class));
     verify(kafkaTemplate, times(1)).send(anyString(), any(Payment.class));
 
   }

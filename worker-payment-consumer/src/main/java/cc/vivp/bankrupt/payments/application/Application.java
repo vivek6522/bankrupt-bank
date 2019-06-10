@@ -6,8 +6,9 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "cc.vivp.bankrupt.payments.repository")
-@EntityScan(basePackages = "cc.vivp.bankrupt.payments.models.db")
+@EnableJpaRepositories(basePackages = {"cc.vivp.bankrupt.repositories"})
+@EntityScan(basePackages = {"cc.vivp.bankrupt.transactions.models.db",
+    "cc.vivp.bankrupt.payments.models.db", "cc.vivp.bankrupt.contracts.models.db"})
 public class Application {
 
   public static void main(String[] args) {

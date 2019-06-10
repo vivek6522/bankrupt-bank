@@ -11,7 +11,7 @@ import lombok.Value;
 
 @Value
 @AllArgsConstructor
-//Add a private default constructor used through reflection
+// Add a private default constructor used through reflection
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 @Entity
 @Table(name = "payments")

@@ -9,6 +9,8 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import cc.vivp.bankrupt.payments.consumer.KafkaPaymentCollector;
+import cc.vivp.bankrupt.repositories.ContractRepository;
+import cc.vivp.bankrupt.repositories.TransactionRepository;
 
 @Configuration
 public class ConfigurationAndBeansProvider {
@@ -31,7 +33,8 @@ public class ConfigurationAndBeansProvider {
   }
 
   @Bean
-  public KafkaPaymentCollector enableKafkaPaymentCollector() {
-    return new KafkaPaymentCollector();
+  public KafkaPaymentCollector enableKafkaPaymentCollector(
+      TransactionRepository transactionRepository, ContractRepository contractRepository) {
+    return new KafkaPaymentCollector(transactionRepository, contractRepository);
   }
 }

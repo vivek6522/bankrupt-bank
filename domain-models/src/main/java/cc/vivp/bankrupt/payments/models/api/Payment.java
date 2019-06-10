@@ -21,7 +21,7 @@ public class Payment {
   String creditorIban;
   @DecimalMin(value = "0.00")
   BigDecimal amount;
-  @Pattern(regexp = "^[a-zA-Z0-9]{4,70}$")
+  @Pattern(regexp = "^[a-zA-Z0-9 ]{4,70}$")
   String description;
   @Pattern(regexp = "^[a-zA-Z0-9]{4,70}$")
   String creditorName;

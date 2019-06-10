@@ -4,20 +4,24 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.kafka.core.KafkaTemplate;
 import cc.vivp.bankrupt.contracts.models.db.Contract;
-import cc.vivp.bankrupt.contracts.repository.ContractRepository;
 import cc.vivp.bankrupt.payments.models.api.Payment;
 import cc.vivp.bankrupt.payments.models.api.PaymentDispatchException;
 import cc.vivp.bankrupt.payments.service.IPaymentDispatcher;
+import cc.vivp.bankrupt.repositories.ContractRepository;
+import cc.vivp.bankrupt.repositories.PaymentRepository;
 
 public class KafkaPaymentDispatcher implements IPaymentDispatcher {
 
   private final ContractRepository contractRepository;
+  private final PaymentRepository paymentRepository;
   private final KafkaTemplate<String, Object> kafkaTemplate;
   private final String topicName;
 
   public KafkaPaymentDispatcher(ContractRepository contractRepository,
-      KafkaTemplate<String, Object> kafkaTemplate, String topicName) {
+      PaymentRepository paymentRepository, KafkaTemplate<String, Object> kafkaTemplate,
+      String topicName) {
     this.contractRepository = contractRepository;
+    this.paymentRepository = paymentRepository;
     this.kafkaTemplate = kafkaTemplate;
     this.topicName = topicName;
   }
@@ -30,9 +34,14 @@ public class KafkaPaymentDispatcher implements IPaymentDispatcher {
           "Debtor account not owned by logged in customer or does not exist");
     }
 
-    Payment paymentConfirmation = new Payment(UUID.randomUUID().toString(), payment.getDebtorIban(),
-        payment.getCreditorIban(), payment.getAmount(), payment.getDescription(),
-        payment.getCreditorName());
+    String paymentId = UUID.randomUUID().toString();
+    Payment paymentConfirmation =
+        new Payment(paymentId, payment.getDebtorIban(), payment.getCreditorIban(),
+            payment.getAmount(), payment.getDescription(), payment.getCreditorName());
+
+    paymentRepository.save(new cc.vivp.bankrupt.payments.models.db.Payment(paymentId,
+        payment.getDebtorIban(), payment.getCreditorIban(), payment.getAmount(),
+        payment.getDescription(), payment.getCreditorName()));
 
     kafkaTemplate.send(topicName, paymentConfirmation);
 
