@@ -84,10 +84,10 @@ project(":service-payment-producer") {
     testImplementation libraries.spring_boot_starter_test
     testImplementation libraries.spring_context
     testImplementation libraries.junit_jupiter_api
-    testRuntime libraries.junit_jupiter_engine
-    testImplementation libraries.json_path
-    testRuntime libraries.h2
     testImplementation libraries.mockito
+    testImplementation libraries.json_path
+    testRuntime libraries.junit_jupiter_engine
+    testRuntime libraries.h2
   }
 
   test {
@@ -116,6 +116,7 @@ project(":worker-payment-consumer") {
     testImplementation libraries.spring_boot_starter_test
     testImplementation libraries.spring_context
     testImplementation libraries.junit_jupiter_api
+    testImplementation libraries.mockito
     testRuntime libraries.junit_jupiter_engine
   }
 

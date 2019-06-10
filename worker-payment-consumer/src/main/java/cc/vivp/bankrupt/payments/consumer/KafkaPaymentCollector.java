@@ -27,7 +27,7 @@ public class KafkaPaymentCollector {
   @KafkaListener(topics = "${kafka.payments.topic-name}",
       containerFactory = "kafkaListenerContainerFactory",
       groupId = "${spring.kafka.consumer.group-id}")
-  public void listenAsObject(ConsumerRecord<String, Payment> consumerRecord,
+  public void listenForPayment(ConsumerRecord<String, Payment> consumerRecord,
       @Payload Payment payment) {
 
     Optional<Contract> debtor = contractRepository.findById(payment.getDebtorIban());

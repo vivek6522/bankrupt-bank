@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,12 +66,13 @@ public class KafkaPaymentDispatcherTest {
     ListenableFuture<SendResult<String, Object>> listenableFuture = null;
     when(kafkaTemplate.send(anyString(), any(Payment.class))).thenReturn(listenableFuture);
 
-    underTest.dispatchPayment(payment);
+    Payment dispatchedPayment = underTest.dispatchPayment(payment);
 
     verify(contractRepository, times(1)).findById(anyString());
     verify(paymentRepository, times(1)).save(any(cc.vivp.bankrupt.payments.models.db.Payment.class));
     verify(kafkaTemplate, times(1)).send(anyString(), any(Payment.class));
 
+    assertTrue(dispatchedPayment.getId().matches("([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}){1}"));
   }
 
   @Test
