@@ -1,5 +1,6 @@
 package cc.vivp.bankrupt.payments.application;
 
+import javax.persistence.EntityNotFoundException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -33,6 +34,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(PaymentDispatchException.class)
   protected ResponseEntity<Object> handlePaymentDispatchException(PaymentDispatchException ex) {
     return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Technical error occured while dispatching payment", ex));
+  }
+
+  @ExceptionHandler(EntityNotFoundException.class)
+  protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
+    return buildResponseEntity(new ApiError(HttpStatus.NOT_FOUND, "Not found", ex));
   }
 
   private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {

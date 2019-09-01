@@ -10,56 +10,47 @@ buildscript {
 
 plugins {
   id "io.freefair.lombok" version "3.2.1" apply false
+  id "io.spring.dependency-management" version "1.0.8.RELEASE"
 }
 
 def versions = [
-  h2: "1.4.199",
   jackson: "2.9.8",
   javaxPersistence: "2.2",
   javaxValidation: "2.0.1.Final",
-  jsonPath: "2.4.0",
-  junitJupiter: "5.3.2",
-  junitPlatform: "1.5.0-M1",
   mockito: "2.20.1",
   mysqlConnector: "8.0.16",
-  springBoot: "2.1.4.RELEASE",
   springDataJpa: "2.1.7.RELEASE",
   springFramework: "5.1.6.RELEASE",
   springKafka: "2.2.6.RELEASE",
   springfoxSwagger2: "2.9.2",
   springfoxSwaggerUi: "2.9.2",
+  springCloud: "Greenwich.SR2"
 ]
 
-def libraries = [
-  h2: "com.h2database:h2:$versions.h2",
-  jackson_datatype_jsr310: "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$versions.jackson",
-  javax_persistence: "javax.persistence:javax.persistence-api:$versions.javaxPersistence",
-  javax_validation: "javax.validation:validation-api:$versions.javaxValidation",
-  json_path: "com.jayway.jsonpath:json-path:$versions.jsonPath",
-  junit_jupiter_api: "org.junit.jupiter:junit-jupiter-api:$versions.junitJupiter",
-  junit_jupiter_engine: "org.junit.jupiter:junit-jupiter-engine:$versions.junitJupiter",
-  junit_platform_launcher: "org.junit.platform:junit-platform-launcher:$versions.junitPlatform",
-  junit_platform_runner: "org.junit.platform:junit-platform-runner:$versions.junitPlatform",
-  mockito: "org.mockito:mockito-junit-jupiter:$versions.mockito",
-  mysql_connector_java: "mysql:mysql-connector-java:$versions.mysqlConnector",
-  spring_boot_starter_data_jpa: "org.springframework.boot:spring-boot-starter-data-jpa:$versions.springBoot",
-  spring_boot_starter_test: "org.springframework.boot:spring-boot-starter-test:$versions.springBoot",
-  spring_boot_starter_web: "org.springframework.boot:spring-boot-starter-web:$versions.springBoot",
-  spring_context: "org.springframework:spring-context:$versions.springFramework",
-  spring_data_jpa: "org.springframework.data:spring-data-jpa:$versions.springDataJpa",
-  spring_kafka: "org.springframework.kafka:spring-kafka:$versions.springKafka",
-  spring_web: "org.springframework:spring-web:$versions.springFramework",
-  springfox_swagger2: "io.springfox:springfox-swagger2:$versions.springfoxSwagger2",
-  springfox_swagger_ui: "io.springfox:springfox-swagger-ui:$versions.springfoxSwaggerUi",
-  spring_boot_devtools: "org.springframework.boot:spring-boot-devtools:$versions.springBoot"
-]
-
-subprojects {
+allprojects {
 
   apply plugin: "java"
+  apply plugin: "org.springframework.boot"
+  apply plugin: "io.spring.dependency-management"
+  apply plugin: "io.freefair.lombok"
+
+  configurations {
+    developmentOnly
+    runtimeClasspath {
+      extendsFrom developmentOnly
+    }
+  }
+
+  dependencyManagement {
+    imports {
+      mavenBom "org.junit:junit-bom:5.5.1"
+      mavenBom "org.springframework.boot:spring-boot-dependencies:$versions.springBoot"
+      mavenBom "org.springframework.cloud:spring-cloud-dependencies:$versions.springCloud"
+    }
+  }
 
   version "1.0.0-SNAPSHOT"
-  group "cc.vivp.payments"
+  group "cc.vivp.bankrupt"
 
   sourceCompatibility = 1.8
   targetCompatibility = 1.8
@@ -70,32 +61,27 @@ subprojects {
 }
 
 project(":service-payment-producer") {
-  apply plugin: "java"
-  apply plugin: "org.springframework.boot"
-  apply plugin: "io.spring.dependency-management"
 
   bootJar {
-    baseName = 'service-payment-producer'
-    version =  '1.0.0-SNAPSHOT'
+    baseName = "service-payment-producer"
+    version =  "1.0.0-SNAPSHOT"
   }
 
   dependencies {
     implementation project(":domain-models")
     implementation project(":component-data-repositories")
-    implementation libraries.spring_boot_starter_web
-    implementation libraries.spring_boot_starter_data_jpa
-    implementation libraries.spring_kafka
-    implementation libraries.springfox_swagger2
-    implementation libraries.springfox_swagger_ui
-    implementation libraries.spring_boot_devtools
-    runtime libraries.mysql_connector_java
-    testImplementation libraries.spring_boot_starter_test
-    testImplementation libraries.spring_context
-    testImplementation libraries.junit_jupiter_api
-    testImplementation libraries.mockito
-    testImplementation libraries.json_path
-    testRuntime libraries.junit_jupiter_engine
-    testRuntime libraries.h2
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.kafka:spring-kafka:$versions.springKafka"
+    implementation "io.springfox:springfox-swagger2:$versions.springfoxSwagger2"
+    implementation "io.springfox:springfox-swagger-ui:$versions.springfoxSwaggerUi"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    runtime "mysql:mysql-connector-java:$versions.mysqlConnector"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "org.mockito:mockito-junit-jupiter:$versions.mockito"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine"
   }
 
   test {
@@ -105,27 +91,25 @@ project(":service-payment-producer") {
 }
 
 project(":worker-payment-consumer") {
-  apply plugin: "java"
-  apply plugin: "org.springframework.boot"
-  apply plugin: "io.spring.dependency-management"
 
   bootJar {
-    baseName = 'worker-payment-consumer'
-    version =  '0.0.1-SNAPSHOT'
+    baseName = "worker-payment-consumer"
+    version =  "0.0.1-SNAPSHOT"
   }
 
   dependencies {
     implementation project(":domain-models")
     implementation project(":component-data-repositories")
-    implementation libraries.spring_boot_starter_web
-    implementation libraries.spring_boot_starter_data_jpa
-    implementation libraries.spring_kafka
-    runtime libraries.mysql_connector_java
-    testImplementation libraries.spring_boot_starter_test
-    testImplementation libraries.spring_context
-    testImplementation libraries.junit_jupiter_api
-    testImplementation libraries.mockito
-    testRuntime libraries.junit_jupiter_engine
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.kafka:spring-kafka:$versions.springKafka"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    runtime "mysql:mysql-connector-java:$versions.mysqlConnector"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "org.mockito:mockito-junit-jupiter:$versions.mockito"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine"
   }
 
   test {
@@ -136,23 +120,78 @@ project(":worker-payment-consumer") {
 
 project(":component-data-repositories") {
 
-  apply plugin: "java"
-
   dependencies {
   	implementation project(":domain-models")
-    implementation libraries.spring_data_jpa
+    implementation "org.springframework.data:spring-data-jpa:$versions.springDataJpa"
   }
 }
 
 project(":domain-models") {
 
-  apply plugin: "java"
-  apply plugin: "io.freefair.lombok"
+  dependencies {
+    implementation "javax.validation:validation-api:$versions.javaxValidation"
+    implementation "org.springframework:spring-web:$versions.springFramework"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$versions.jackson"
+    implementation "javax.persistence:javax.persistence-api:$versions.javaxPersistence"
+  }
+}
+
+project(":naming-server") {
+
+  bootJar {
+    baseName = "naming-server"
+    version =  "0.0.1-SNAPSHOT"
+  }
 
   dependencies {
-    implementation libraries.javax_validation
-    implementation libraries.spring_web
-    implementation libraries.jackson_datatype_jsr310
-    implementation libraries.javax_persistence
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.cloud:spring-cloud-starter-config"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server"
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
   }
+}
+
+project(":api-gateway") {
+
+  bootJar {
+    baseName = "api-gateway"
+    version =  "0.0.1-SNAPSHOT"
+  }
+
+  dependencies {
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-zuul"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.cloud:spring-cloud-starter-config"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server"
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+  }
+}
+
+project(":service-transaction-management") {
+
+  bootJar {
+    baseName = "service-transaction-management"
+    version =  "1.0.0-SNAPSHOT"
+  }
+
+  dependencies {
+    implementation project(":domain-models")
+    implementation project(":component-data-repositories")
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "io.springfox:springfox-swagger2:$versions.springfoxSwagger2"
+    implementation "io.springfox:springfox-swagger-ui:$versions.springfoxSwaggerUi"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    runtime "mysql:mysql-connector-java:$versions.mysqlConnector"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testImplementation "org.mockito:mockito-junit-jupiter:$versions.mockito"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine"
+  }
+
+  test {
+    useJUnitPlatform()
+  }
+
 }

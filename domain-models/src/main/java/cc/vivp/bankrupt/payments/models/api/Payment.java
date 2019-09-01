@@ -14,6 +14,15 @@ import lombok.Value;
 @NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
 public class Payment {
 
+  public Payment(cc.vivp.bankrupt.payments.models.db.Payment payment) {
+    this.id = payment.getId();
+    this.debtorIban = payment.getDebtorIban();
+    this.creditorIban = payment.getCreditorIban();
+    this.amount = payment.getAmount();
+    this.description = payment.getDescription();
+    this.creditorName = payment.getCreditorName();
+  }
+
   String id;
   @Pattern(regexp = "^[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16}$")
   String debtorIban;

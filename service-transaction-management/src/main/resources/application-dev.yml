@@ -6,11 +6,11 @@ logging:
     root: INFO
 
 server:
-  port: 58080
+  port: 58090
 
 spring:
   application:
-    name: service-payment-producer
+    name: service-transaction-management
   datasource:
     password: bankrupt
     testWhileIdle: true
@@ -23,12 +23,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
   jackson:
     default-property-inclusion: NON_NULL
-  kafka:
-    bootstrap-servers: 0.0.0.0:9092
-
-kafka:
-  payments:
-    topic-name: payments-topic
 
 eureka:
   client:

@@ -4,9 +4,13 @@ logging:
       vivp:
         bankrupt: DEBUG
     root: INFO
+
 server:
   port: 48080
+
 spring:
+  application:
+    name: worker-payment-consumer
   datasource:
     password: bankrupt
     testWhileIdle: true
