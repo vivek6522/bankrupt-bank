@@ -25,7 +25,9 @@ def versions = [
   springBoot: "2.1.4.RELEASE",
   springDataJpa: "2.1.7.RELEASE",
   springFramework: "5.1.6.RELEASE",
-  springKafka: "2.2.6.RELEASE"
+  springKafka: "2.2.6.RELEASE",
+  springfoxSwagger2: "2.9.2",
+  springfoxSwaggerUi: "2.9.2",
 ]
 
 def libraries = [
@@ -46,7 +48,10 @@ def libraries = [
   spring_context: "org.springframework:spring-context:$versions.springFramework",
   spring_data_jpa: "org.springframework.data:spring-data-jpa:$versions.springDataJpa",
   spring_kafka: "org.springframework.kafka:spring-kafka:$versions.springKafka",
-  spring_web: "org.springframework:spring-web:$versions.springFramework"
+  spring_web: "org.springframework:spring-web:$versions.springFramework",
+  springfox_swagger2: "io.springfox:springfox-swagger2:$versions.springfoxSwagger2",
+  springfox_swagger_ui: "io.springfox:springfox-swagger-ui:$versions.springfoxSwaggerUi",
+  spring_boot_devtools: "org.springframework.boot:spring-boot-devtools:$versions.springBoot"
 ]
 
 subprojects {
@@ -80,6 +85,9 @@ project(":service-payment-producer") {
     implementation libraries.spring_boot_starter_web
     implementation libraries.spring_boot_starter_data_jpa
     implementation libraries.spring_kafka
+    implementation libraries.springfox_swagger2
+    implementation libraries.springfox_swagger_ui
+    implementation libraries.spring_boot_devtools
     runtime libraries.mysql_connector_java
     testImplementation libraries.spring_boot_starter_test
     testImplementation libraries.spring_context

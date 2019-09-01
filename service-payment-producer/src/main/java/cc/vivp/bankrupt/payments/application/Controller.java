@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import cc.vivp.bankrupt.payments.models.api.Payment;
 import cc.vivp.bankrupt.payments.models.api.PaymentDispatchException;
 import cc.vivp.bankrupt.payments.service.IPaymentDispatcher;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/payments")
@@ -21,6 +22,7 @@ public class Controller {
     this.paymentDispatcher = paymentDispatcher;
   }
 
+  @ApiOperation(value = "Initiate payment")
   @PostMapping
   public Payment initiatePayment(@Valid @RequestBody Payment payment) throws PaymentDispatchException {
     return paymentDispatcher.dispatchPayment(payment);
