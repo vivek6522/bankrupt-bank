@@ -19,6 +19,7 @@ def versions = [
   javaxValidation: "2.0.1.Final",
   mockito: "2.20.1",
   mysqlConnector: "8.0.16",
+  springBoot: "2.1.8.RELEASE",
   springDataJpa: "2.1.7.RELEASE",
   springFramework: "5.1.6.RELEASE",
   springKafka: "2.2.6.RELEASE",
@@ -30,9 +31,7 @@ def versions = [
 allprojects {
 
   apply plugin: "java"
-  apply plugin: "org.springframework.boot"
   apply plugin: "io.spring.dependency-management"
-  apply plugin: "io.freefair.lombok"
 
   configurations {
     developmentOnly
@@ -62,20 +61,18 @@ allprojects {
 
 project(":service-payment-producer") {
 
-  bootJar {
-    baseName = "service-payment-producer"
-    version =  "1.0.0-SNAPSHOT"
-  }
-
   dependencies {
     implementation project(":domain-models")
     implementation project(":component-data-repositories")
+    implementation project(":commons")
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.kafka:spring-kafka:$versions.springKafka"
     implementation "io.springfox:springfox-swagger2:$versions.springfoxSwagger2"
     implementation "io.springfox:springfox-swagger-ui:$versions.springfoxSwaggerUi"
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
     developmentOnly "org.springframework.boot:spring-boot-devtools"
     runtime "mysql:mysql-connector-java:$versions.mysqlConnector"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
@@ -91,11 +88,6 @@ project(":service-payment-producer") {
 }
 
 project(":worker-payment-consumer") {
-
-  bootJar {
-    baseName = "worker-payment-consumer"
-    version =  "0.0.1-SNAPSHOT"
-  }
 
   dependencies {
     implementation project(":domain-models")
@@ -123,10 +115,13 @@ project(":component-data-repositories") {
   dependencies {
   	implementation project(":domain-models")
     implementation "org.springframework.data:spring-data-jpa:$versions.springDataJpa"
+    implementation "javax.persistence:javax.persistence-api:$versions.javaxPersistence"
   }
 }
 
 project(":domain-models") {
+
+  apply plugin: "io.freefair.lombok"
 
   dependencies {
     implementation "javax.validation:validation-api:$versions.javaxValidation"
@@ -138,11 +133,6 @@ project(":domain-models") {
 
 project(":naming-server") {
 
-  bootJar {
-    baseName = "naming-server"
-    version =  "0.0.1-SNAPSHOT"
-  }
-
   dependencies {
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.cloud:spring-cloud-starter-config"
@@ -152,11 +142,6 @@ project(":naming-server") {
 }
 
 project(":api-gateway") {
-
-  bootJar {
-    baseName = "api-gateway"
-    version =  "0.0.1-SNAPSHOT"
-  }
 
   dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-zuul"
@@ -169,19 +154,17 @@ project(":api-gateway") {
 
 project(":service-transaction-management") {
 
-  bootJar {
-    baseName = "service-transaction-management"
-    version =  "1.0.0-SNAPSHOT"
-  }
-
   dependencies {
     implementation project(":domain-models")
     implementation project(":component-data-repositories")
+    implementation project(":commons")
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "io.springfox:springfox-swagger2:$versions.springfoxSwagger2"
     implementation "io.springfox:springfox-swagger-ui:$versions.springfoxSwaggerUi"
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
     developmentOnly "org.springframework.boot:spring-boot-devtools"
     runtime "mysql:mysql-connector-java:$versions.mysqlConnector"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
@@ -194,4 +177,14 @@ project(":service-transaction-management") {
     useJUnitPlatform()
   }
 
+}
+
+project(":commons") {
+
+  dependencies {
+    implementation project(":domain-models")
+    implementation "org.springframework:spring-webmvc:$versions.springFramework"
+    implementation "javax.persistence:javax.persistence-api:$versions.javaxPersistence"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$versions.jackson"
+  }
 }

@@ -1,5 +1,7 @@
 package cc.vivp.bankrupt.payments.application;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +40,15 @@ public class Controller {
   @GetMapping("{paymentId}")
   public Payment fetchPaymentDetails(@PathVariable("paymentId") String paymentId) {
     return new Payment(paymentRepository.getOne(paymentId));
+  }
+
+  @ApiOperation(value = "Fetch payments for debtor IBAN")
+  @GetMapping("iban/{iban}")
+  public List<Payment> findPaymentsForDebtor(@PathVariable("iban") String iban) {
+    List<Payment> paymentsForDebtor = new ArrayList<>();
+    paymentRepository.findPaymentsForDebtor(iban).stream()
+        .forEach(payment -> paymentsForDebtor.add(new Payment(payment)));
+    return paymentsForDebtor;
   }
 
 }

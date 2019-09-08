@@ -1,1 +1,1 @@
-include 'service-payment-producer', 'worker-payment-consumer', 'domain-models', 'component-data-repositories', 'naming-server', 'api-gateway', 'service-transaction-management'
+include 'service-payment-producer', 'worker-payment-consumer', 'domain-models', 'component-data-repositories', 'naming-server', 'api-gateway', 'service-transaction-management', 'commons'

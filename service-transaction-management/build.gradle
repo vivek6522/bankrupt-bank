@@ -1,0 +1,14 @@
+buildscript {
+  dependencies {
+    classpath "org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE"
+  }
+}
+
+plugins {     
+  id "org.springframework.boot"
+}
+
+bootJar {
+  baseName = "service-transaction-management"
+  version =  "1.0.0-SNAPSHOT"
+}

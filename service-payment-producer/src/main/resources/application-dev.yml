@@ -34,3 +34,8 @@ eureka:
   client:
     service-url:
       default-zone: http://localhost:8761
+
+service-payment-producer:
+  ribbon:
+    listOfServers:
+      - http://localhost:58080
