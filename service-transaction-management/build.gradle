@@ -9,6 +9,6 @@ plugins {
 }
 
 bootJar {
-  baseName = "service-transaction-management"
-  version =  "1.0.0-SNAPSHOT"
+  archiveBaseName = "service-transaction-management"
+  archiveVersion =  "1.0.0-SNAPSHOT"
 }

@@ -11,7 +11,12 @@ import cc.vivp.bankrupt.payments.models.api.Payment;
 @RibbonClient(name = "service-payment-producer")
 public interface PaymentProxy {
 
-  @GetMapping("payments/iban/{iban}")
-  public List<Payment> findPaymentsForDebtor(@PathVariable("iban") String iban);
+  @GetMapping("payments/iban/{iban}/out")
+  public List<Payment> findOutgoingPaymentsFor(@PathVariable("iban") String iban);
 
+  @GetMapping("payments/iban/{iban}/in")
+  public List<Payment> findIncomingPaymentsFor(@PathVariable("iban") String iban);
+
+  @GetMapping("payments/iban/{iban}/all")
+  public List<Payment> findAllPaymentsFor(@PathVariable("iban") String iban);
 }

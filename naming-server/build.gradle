@@ -9,6 +9,6 @@ plugins {
 }
 
 bootJar {
-  baseName = "naming-server"
-  version =  "0.0.1-SNAPSHOT"
+  archiveBaseName = "naming-server"
+  archiveVersion =  "0.0.1-SNAPSHOT"
 }

@@ -9,7 +9,7 @@ buildscript {
 }
 
 plugins {
-  id "io.freefair.lombok" version "3.2.1" apply false
+  id "io.freefair.lombok" version "4.1.6" apply false
   id "io.spring.dependency-management" version "1.0.8.RELEASE"
 }
 
@@ -19,13 +19,13 @@ def versions = [
   javaxValidation: "2.0.1.Final",
   mockito: "2.20.1",
   mysqlConnector: "8.0.16",
-  springBoot: "2.1.8.RELEASE",
-  springDataJpa: "2.1.7.RELEASE",
+  springBoot: "2.2.2.RELEASE",
+  springDataJpa: "2.2.2.RELEASE",
   springFramework: "5.1.6.RELEASE",
-  springKafka: "2.2.6.RELEASE",
+  springKafka: "2.4.0.RELEASE",
   springfoxSwagger2: "2.9.2",
   springfoxSwaggerUi: "2.9.2",
-  springCloud: "Greenwich.SR2"
+  springCloud: "Hoxton.SR1"
 ]
 
 allprojects {
@@ -74,11 +74,11 @@ project(":service-payment-producer") {
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
     developmentOnly "org.springframework.boot:spring-boot-devtools"
-    runtime "mysql:mysql-connector-java:$versions.mysqlConnector"
+    runtimeOnly "mysql:mysql-connector-java:$versions.mysqlConnector"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "org.mockito:mockito-junit-jupiter:$versions.mockito"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
   }
 
   test {
@@ -97,11 +97,11 @@ project(":worker-payment-consumer") {
     implementation "org.springframework.kafka:spring-kafka:$versions.springKafka"
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
     developmentOnly "org.springframework.boot:spring-boot-devtools"
-    runtime "mysql:mysql-connector-java:$versions.mysqlConnector"
+    runtimeOnly "mysql:mysql-connector-java:$versions.mysqlConnector"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "org.mockito:mockito-junit-jupiter:$versions.mockito"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
   }
 
   test {
@@ -166,11 +166,11 @@ project(":service-transaction-management") {
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
     implementation "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
     developmentOnly "org.springframework.boot:spring-boot-devtools"
-    runtime "mysql:mysql-connector-java:$versions.mysqlConnector"
+    runtimeOnly "mysql:mysql-connector-java:$versions.mysqlConnector"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation "org.junit.jupiter:junit-jupiter-api"
     testImplementation "org.mockito:mockito-junit-jupiter:$versions.mockito"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
   }
 
   test {

@@ -9,6 +9,6 @@ plugins {
 }
 
 bootJar {
-  baseName = "service-payment-producer"
-  version =  "1.0.0-SNAPSHOT"
+  archiveBaseName = "service-payment-producer"
+  archiveVersion =  "1.0.0-SNAPSHOT"
 }

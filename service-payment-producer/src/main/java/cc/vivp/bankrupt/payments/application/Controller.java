@@ -42,13 +42,31 @@ public class Controller {
     return new Payment(paymentRepository.getOne(paymentId));
   }
 
-  @ApiOperation(value = "Fetch payments for debtor IBAN")
-  @GetMapping("iban/{iban}")
-  public List<Payment> findPaymentsForDebtor(@PathVariable("iban") String iban) {
+  @ApiOperation(value = "Fetch outgoing payments for IBAN")
+  @GetMapping("iban/{iban}/out")
+  public List<Payment> findOutgoingPaymentsFor(@PathVariable("iban") String iban) {
     List<Payment> paymentsForDebtor = new ArrayList<>();
-    paymentRepository.findPaymentsForDebtor(iban).stream()
+    paymentRepository.findOutgoingPaymentsFor(iban).stream()
         .forEach(payment -> paymentsForDebtor.add(new Payment(payment)));
     return paymentsForDebtor;
+  }
+
+  @ApiOperation(value = "Fetch incoming payments for IBAN")
+  @GetMapping("iban/{iban}/in")
+  public List<Payment> findIncomingPaymentsFor(@PathVariable("iban") String iban) {
+    List<Payment> paymentsForCreditor = new ArrayList<>();
+    paymentRepository.findIncomingPaymentsFor(iban).stream()
+        .forEach(payment -> paymentsForCreditor.add(new Payment(payment)));
+    return paymentsForCreditor;
+  }
+
+  @ApiOperation(value = "Fetch all payments for IBAN")
+  @GetMapping("iban/{iban}/all")
+  public List<Payment> findAllPaymentsFor(@PathVariable("iban") String iban) {
+    List<Payment> paymentsForIban = new ArrayList<>();
+    paymentRepository.findAllPaymentsFor(iban).stream()
+        .forEach(payment -> paymentsForIban.add(new Payment(payment)));
+    return paymentsForIban;
   }
 
 }

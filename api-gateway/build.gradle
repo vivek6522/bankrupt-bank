@@ -9,6 +9,6 @@ plugins {
 }
 
 bootJar {
-  baseName = "api-gateway"
-  version =  "0.0.1-SNAPSHOT"
+  archiveBaseName = "api-gateway"
+  archiveVersion =  "0.0.1-SNAPSHOT"
 }

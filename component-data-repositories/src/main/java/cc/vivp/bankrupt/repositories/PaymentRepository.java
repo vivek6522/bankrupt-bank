@@ -11,5 +11,12 @@ import cc.vivp.bankrupt.payments.models.db.Payment;
 public interface PaymentRepository extends JpaRepository<Payment, String> {
 
   @Query("select p from Payment as p where p.debtorIban = :debtorIban")
-  List<Payment> findPaymentsForDebtor(@Param("debtorIban") String debtorIban);
+  List<Payment> findOutgoingPaymentsFor(@Param("debtorIban") String debtorIban);
+
+  @Query("select p from Payment as p where p.creditorIban = :creditorIban")
+  List<Payment> findIncomingPaymentsFor(@Param("creditorIban") String creditorIban);
+
+  @Query("select p from Payment as p where p.debtorIban = :iban or p.creditorIban = :iban")
+  List<Payment> findAllPaymentsFor(@Param("iban") String iban);
+
 }

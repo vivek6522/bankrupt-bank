@@ -9,6 +9,6 @@ plugins {
 }
 
 bootJar {
-  baseName = "worker-payment-consumer"
-  version =  "0.0.1-SNAPSHOT"
+  archiveBaseName = "worker-payment-consumer"
+  archiveVersion =  "0.0.1-SNAPSHOT"
 }

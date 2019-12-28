@@ -30,9 +30,9 @@ public class Controller {
   @GetMapping("{iban}")
   public List<Transaction> fetchTransactionsForAccount(@PathVariable("iban") String iban) {
 
-    List<Payment> paymentsForDebtor = paymentProxy.findPaymentsForDebtor(iban);
+    List<Payment> paymentsForIban = paymentProxy.findAllPaymentsFor(iban);
 
-    return paymentsForDebtor.stream().map(payment -> {
+    return paymentsForIban.stream().map(payment -> {
       cc.vivp.bankrupt.transactions.models.db.Transaction transaction =
           transactionRepository.getOne(payment.getId());
       return new Transaction(transaction);
