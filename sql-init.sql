@@ -16,10 +16,29 @@ CREATE TABLE `contracts` (
   `client_id` varchar(128) NOT NULL
 ) ENGINE='InnoDB';
 
+CREATE TABLE `account` (
+  `id` varchar(64) NOT NULL PRIMARY KEY,
+  `type` varchar(128) NOT NULL,
+  `balance` decimal NOT NULL
+) ENGINE='InnoDB';
+
 INSERT INTO `contracts` (`iban`, `type`, `balance`, `client_id`) VALUES ('NL80ABNA0419499482', 'current', '50000', uuid());
 INSERT INTO `contracts` (`iban`, `type`, `balance`, `client_id`) VALUES ('NL80ABNA0419499483', 'savings', '50000', uuid());
 INSERT INTO `contracts` (`iban`, `type`, `balance`, `client_id`) VALUES ('NL95ABNA0547637861', 'current', '0.0', uuid());
 INSERT INTO `contracts` (`iban`, `type`, `balance`, `client_id`) VALUES ('NL95ABNA0123456789', 'current', '12345', uuid());
+
+INSERT INTO `account` (`id`, `type`, `balance`) VALUES ('NL80ABNA0419499482', 'CURRENT', '50000');
+INSERT INTO `account` (`id`, `type`, `balance`) VALUES ('NL80ABNA0419499483', 'SAVINGS', '50000');
+INSERT INTO `account` (`id`, `type`, `balance`) VALUES ('NL95ABNA0547637861', 'CURRENT', '0');
+INSERT INTO `account` (`id`, `type`, `balance`) VALUES ('NL95ABNA0123456789', 'CURRENT', '12345');
+
+CREATE TABLE `activity` (
+  `id` varchar(64) NOT NULL PRIMARY KEY,
+  `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `source_account_id` varchar(64) NOT NULL,
+  `target_account_id` varchar(64) NOT NULL,
+  `amount` bigint NOT NULL
+) ENGINE='InnoDB';
 
 CREATE TABLE `payments` (
   `id` varchar(64) NOT NULL PRIMARY KEY,

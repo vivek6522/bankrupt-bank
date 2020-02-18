@@ -1,0 +1,40 @@
+logging:
+  level:
+    cc:
+      vivp:
+        bankrupt: DEBUG
+    root: INFO
+
+server:
+  port: 58080
+
+spring:
+  application:
+    name: api
+  datasource:
+    password: bankrupt
+    testWhileIdle: true
+    url: jdbc:mysql://0.0.0.0:3306/bankrupt?useSSL=false
+    username: root
+    validationQuery: SELECT 1
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  jackson:
+    default-property-inclusion: NON_NULL
+  data:
+    neo4j:
+      uri: bolt://localhost
+      username: neo4j
+      password: vivp
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761
+
+api:
+  ribbon:
+    listOfServers:
+      - http://localhost:58080

@@ -15,13 +15,18 @@ plugins {
 
 def versions = [
   jackson: "2.9.8",
+  jakartaPersistence: "2.2.3",
+  jakartaValidation: "2.0.2",
   javaxPersistence: "2.2",
   javaxValidation: "2.0.1.Final",
   mockito: "2.20.1",
   mysqlConnector: "8.0.16",
+  neo4j: "4.0.0",
+  neo4jBoltDriver: "3.2.5",
   springBoot: "2.2.2.RELEASE",
-  springDataJpa: "2.2.2.RELEASE",
-  springFramework: "5.1.6.RELEASE",
+  springDataJpa: "2.2.3.RELEASE",
+  springDataNeo4j: "2.2.2.RELEASE",
+  springFramework: "5.2.2.RELEASE",
   springKafka: "2.4.0.RELEASE",
   springfoxSwagger2: "2.9.2",
   springfoxSwaggerUi: "2.9.2",
@@ -32,6 +37,7 @@ allprojects {
 
   apply plugin: "java"
   apply plugin: "io.spring.dependency-management"
+  apply plugin: "io.freefair.lombok"
 
   configurations {
     developmentOnly
@@ -131,27 +137,6 @@ project(":domain-models") {
   }
 }
 
-project(":naming-server") {
-
-  dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.cloud:spring-cloud-starter-config"
-    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server"
-    developmentOnly "org.springframework.boot:spring-boot-devtools"
-  }
-}
-
-project(":api-gateway") {
-
-  dependencies {
-    implementation "org.springframework.cloud:spring-cloud-starter-netflix-zuul"
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.cloud:spring-cloud-starter-config"
-    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server"
-    developmentOnly "org.springframework.boot:spring-boot-devtools"
-  }
-}
-
 project(":service-transaction-management") {
 
   dependencies {
@@ -186,5 +171,71 @@ project(":commons") {
     implementation "org.springframework:spring-webmvc:$versions.springFramework"
     implementation "javax.persistence:javax.persistence-api:$versions.javaxPersistence"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$versions.jackson"
+  }
+}
+// ==================================================NEW ARCHITECTURE
+project(":naming-server") {
+
+  dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.cloud:spring-cloud-starter-config"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server"
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+  }
+}
+
+project(":api-gateway") {
+
+  dependencies {
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-zuul"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.cloud:spring-cloud-starter-config"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server"
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+  }
+}
+
+project(":domain-model") {
+}
+
+project(":common") {
+
+  dependencies {
+    implementation "jakarta.validation:jakarta.validation-api:$versions.jakartaValidation"
+  }
+}
+
+project(":core") {
+
+  dependencies {
+    implementation project(":domain-model")
+    implementation project(":common")
+    implementation "org.springframework.data:spring-data-jpa:$versions.springDataJpa"
+  }
+}
+
+project("adapters:persistence") {
+
+  dependencies {
+    implementation project(":domain-model")
+    implementation project(":core")
+    implementation "jakarta.persistence:jakarta.persistence-api:$versions.jakartaPersistence"
+    implementation "org.springframework.data:spring-data-jpa:$versions.springDataJpa"
+    implementation "org.neo4j:neo4j-ogm-bolt-driver:$versions.neo4jBoltDriver"
+    implementation "org.springframework.boot:spring-boot-starter-data-neo4j:$versions.springDataNeo4j"
+    runtimeOnly "org.springframework.boot:spring-boot-starter-data-jpa"
+  }
+}
+
+project("adapters:api") {
+
+  dependencies {
+    implementation project(":domain-model")
+    implementation project(":core")
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    runtimeOnly project(":adapters:persistence")
+    runtimeOnly "mysql:mysql-connector-java:$versions.mysqlConnector"
   }
 }

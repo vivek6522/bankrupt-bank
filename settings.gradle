@@ -1,1 +1,7 @@
 include 'service-payment-producer', 'worker-payment-consumer', 'domain-models', 'component-data-repositories', 'naming-server', 'api-gateway', 'service-transaction-management', 'commons'
+
+include 'domain-model'
+include 'core'
+include 'common'
+include 'adapters:persistence'
+include 'adapters:api'
