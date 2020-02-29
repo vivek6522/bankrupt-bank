@@ -35,5 +35,5 @@ local.properties
 # Gradle related files and caches
 .gradletasknamecache
 .gradle/
+gradle/
 build/
-bin/
