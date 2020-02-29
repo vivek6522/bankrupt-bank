@@ -1,7 +1,7 @@
 
 create table `accounts` (
   `id` bigint not null auto_increment,
-  account_number varchar(255),
+  account_number varchar(32),
   account_type tinyint,
   customer_id bigint,
   balance bigint default 0,
@@ -20,3 +20,13 @@ insert into `customers` (email, name) values ('vivek.prajapati@outlook.com', 'Vi
 
 insert into `accounts` (account_number, account_type, customer_id, balance) values ('NL12ABNA0123456789', 0, 1, 10000);
 insert into `accounts` (account_number, account_type, customer_id, balance) values ('NL80ABNA0419499482', 0, 2, 10000);
+
+create table `transfers` (
+  `id` bigint not null auto_increment,
+  payment_reference varchar(36) not null,
+  source varchar(32) not null,
+  amount bigint not null,
+  destination varchar(32) not null,
+  description varchar(255),
+  timestamp datetime not null
+);

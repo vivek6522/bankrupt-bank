@@ -3,7 +3,7 @@ package cc.vivp.bankrupt.model.api;
 import lombok.Data;
 
 @Data
-public class TransferSpec {
+public class TransferCommand {
   
   String source;
   String destination;

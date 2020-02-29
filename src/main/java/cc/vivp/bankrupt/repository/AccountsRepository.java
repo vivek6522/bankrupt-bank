@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import cc.vivp.bankrupt.model.db.AccountEntity;
 
 @Repository
-public interface AccountRepository extends PagingAndSortingRepository<AccountEntity, Long> {
+public interface AccountsRepository extends PagingAndSortingRepository<AccountEntity, Long> {
   
   @Query("select a from Account as a where a.accountNumber = :accountNumber")
   AccountEntity findByAccountNumber(@Param("accountNumber") String accountNumber);
