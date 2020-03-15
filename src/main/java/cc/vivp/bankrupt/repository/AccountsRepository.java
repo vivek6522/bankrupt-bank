@@ -1,5 +1,6 @@
 package cc.vivp.bankrupt.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +12,6 @@ import cc.vivp.bankrupt.model.db.AccountEntity;
 public interface AccountsRepository extends PagingAndSortingRepository<AccountEntity, Long> {
   
   @Query("select a from Account as a where a.accountNumber = :accountNumber")
-  AccountEntity findByAccountNumber(@Param("accountNumber") String accountNumber);
+  Optional<AccountEntity> findByAccountNumber(@Param("accountNumber") String accountNumber);
 
 }

@@ -1,6 +1,5 @@
 package cc.vivp.bankrupt.event;
 
-import cc.vivp.bankrupt.exception.AccountCreationException;
 import cc.vivp.bankrupt.exception.DomainException;
 import java.time.LocalDateTime;
 

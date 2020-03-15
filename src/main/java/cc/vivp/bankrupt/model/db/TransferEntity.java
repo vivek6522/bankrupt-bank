@@ -17,8 +17,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TransferEntity {
 
-    public TransferEntity(String paymentReference, String source, Long amount, String destination, String description, LocalDateTime timestamp) {
-        this(null, paymentReference, source, amount, destination, description, timestamp);
+    public TransferEntity(String paymentReference, String source, Long amount, String target, String description,
+        LocalDateTime timestamp) {
+        this(null, paymentReference, source, amount, target, description, timestamp);
     }
 
     @Id
@@ -28,7 +29,7 @@ public class TransferEntity {
     String paymentReference;
     String source;
     Long amount;
-    String destination;
+    String target;
     String description;
     LocalDateTime timestamp;
 }

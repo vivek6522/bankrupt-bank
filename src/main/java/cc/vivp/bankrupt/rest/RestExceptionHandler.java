@@ -1,8 +1,10 @@
-package cc.vivp.bankrupt.app;
+package cc.vivp.bankrupt.rest;
 
 import cc.vivp.bankrupt.exception.AccountCreationException;
 import cc.vivp.bankrupt.exception.ApiError;
+import cc.vivp.bankrupt.exception.DomainException;
 import cc.vivp.bankrupt.exception.EntityNotFoundException;
+import cc.vivp.bankrupt.util.MessageKeys;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
@@ -22,24 +24,28 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
         HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, "Malformed JSON request", ex));
+        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, MessageKeys.INVALID_JSON));
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
         HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, "Invalid input", ex));
+        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, MessageKeys.INVALID_INPUT));
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
-        return buildResponseEntity(new ApiError(HttpStatus.NOT_FOUND,
-            String.format("%s -> Parameters: %s", ex.getMessage(), ex.getParams()), ex));
+        return buildResponseEntity(new ApiError(HttpStatus.NOT_FOUND, ex.getMessage()));
     }
 
     @ExceptionHandler(AccountCreationException.class)
     protected ResponseEntity<Object> handleAccountCreationException(AccountCreationException ex) {
-        return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex));
+        return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
+    }
+
+    @ExceptionHandler(DomainException.class)
+    protected ResponseEntity<Object> handleAccountCreationException(DomainException ex) {
+        return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
     }
 
     private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {

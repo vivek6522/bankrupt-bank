@@ -1,9 +1,16 @@
 package cc.vivp.bankrupt.repository;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-
 import cc.vivp.bankrupt.model.db.CustomerEntity;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-@RepositoryRestResource(collectionResourceRel = "customers", path = "customers")
-public interface CustomersRepository extends PagingAndSortingRepository<CustomerEntity, Long> {}
+@Repository
+public interface CustomersRepository extends PagingAndSortingRepository<CustomerEntity, Long> {
+
+    @Query("select c from Customer as c where c.email = :email")
+    Optional<CustomerEntity> findByEmail(@Param("email") String email);
+
+}

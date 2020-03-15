@@ -1,4 +1,4 @@
-package cc.vivp.bankrupt.app;
+package cc.vivp.bankrupt.rest;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

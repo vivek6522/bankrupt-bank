@@ -13,7 +13,7 @@ public class TransferReceipt {
   String paymentReference;
   String source;
   Long amount;
-  String destination;
+  String target;
   String description;
   LocalDateTime timestamp;
 }

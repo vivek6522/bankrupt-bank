@@ -1,5 +1,5 @@
 plugins {
-  id 'org.springframework.boot' version '2.2.4.RELEASE'
+  id 'org.springframework.boot' version '2.2.5.RELEASE'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
   id 'java'
 }
@@ -26,6 +26,7 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
   implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'org.modelmapper:modelmapper:2.3.6'
   implementation 'org.apache.commons:commons-lang3:3.9'
   implementation "org.flywaydb:flyway-core:6.2.4"
@@ -36,6 +37,7 @@ dependencies {
   testImplementation('org.springframework.boot:spring-boot-starter-test') {
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }
+  testImplementation 'org.assertj:assertj-core:3.15.0'
 }
 
 test {

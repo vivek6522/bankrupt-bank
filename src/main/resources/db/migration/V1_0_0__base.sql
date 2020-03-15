@@ -26,7 +26,7 @@ create table `transfers` (
   payment_reference varchar(36) not null,
   source varchar(32) not null,
   amount bigint not null,
-  destination varchar(32) not null,
+  target varchar(32) not null,
   description varchar(255),
   timestamp datetime not null
 );
