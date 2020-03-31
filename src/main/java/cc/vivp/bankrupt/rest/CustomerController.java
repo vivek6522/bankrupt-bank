@@ -23,8 +23,8 @@ public class CustomerController {
         return customerService.registerCustomer(customerCommand);
     }
 
-    @GetMapping("customers/{email}")
-    public Customer fetchCustomerDetails(@PathVariable("email") String email) throws EntityNotFoundException {
-        return customerService.fetchCustomerDetails(email);
+    @GetMapping("customers/{id}")
+    public Customer fetchCustomerDetails(@PathVariable("id") long id) throws EntityNotFoundException {
+        return customerService.fetchCustomerDetails(id);
     }
 }
