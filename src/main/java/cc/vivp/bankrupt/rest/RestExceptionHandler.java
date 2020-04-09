@@ -1,5 +1,6 @@
 package cc.vivp.bankrupt.rest;
 
+import cc.vivp.bankrupt.exception.AccessDeniedException;
 import cc.vivp.bankrupt.exception.AccountCreationException;
 import cc.vivp.bankrupt.exception.ApiError;
 import cc.vivp.bankrupt.exception.DomainException;
@@ -43,8 +44,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    protected ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+        return buildResponseEntity(new ApiError(HttpStatus.FORBIDDEN, ex.getMessage()));
+    }
+
     @ExceptionHandler(DomainException.class)
-    protected ResponseEntity<Object> handleAccountCreationException(DomainException ex) {
+    protected ResponseEntity<Object> handleDomainException(DomainException ex) {
         return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
     }
 

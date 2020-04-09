@@ -32,7 +32,8 @@ public class TransferService {
     private final ModelMapper modelMapper;
 
     public TransferReceipt initiateFundsTransfer(@Valid TransferCommand transferCommand) throws DomainException {
-        return new TransferEvent(LocalDateTime.now(), transferCommand, accountsRepository, transfersRepository)
+        return new TransferEvent(LocalDateTime.now(), transferCommand, accountsRepository, transfersRepository,
+            modelMapper)
             .process();
     }
 

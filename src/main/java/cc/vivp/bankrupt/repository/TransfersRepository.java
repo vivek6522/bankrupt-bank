@@ -15,7 +15,7 @@ public interface TransfersRepository extends PagingAndSortingRepository<Transfer
     Optional<TransferEntity> fetchByPaymentReferenceAndSource(@Param("paymentReference") String paymentReference,
         @Param("source") String source);
 
-    @Query("select t from Transfer as t where t.source = :source")
+    @Query("select t from Transfer as t where t.source.accountNumber = :source")
     List<TransferEntity> fetchTransactionHistory(@Param("source") String source);
 
 }

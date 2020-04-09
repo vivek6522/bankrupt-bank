@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
 public class TransferReceipt {
 
   String paymentReference;
-  String source;
+  String sourceAccountNumber;
+  String sourceCustomerName;
   Long amount;
-  String target;
+  String targetAccountNumber;
+  String targetCustomerName;
   String description;
   LocalDateTime timestamp;
 }

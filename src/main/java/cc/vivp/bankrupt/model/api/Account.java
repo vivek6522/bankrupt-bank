@@ -8,7 +8,6 @@ public class Account {
 
   String accountNumber;
   AccountType accountType;
-  Long customerId;
   Long balance;
 
 }

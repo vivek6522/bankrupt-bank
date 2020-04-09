@@ -17,6 +17,7 @@ public class TransferCommand {
   String target;
   @Min(1)
   Long amount;
+  boolean isAmountInCents;
   String description;
 
 }

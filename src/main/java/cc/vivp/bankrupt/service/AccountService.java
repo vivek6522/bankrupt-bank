@@ -33,7 +33,8 @@ public class AccountService {
             modelMapper).process();
     }
 
-    public Account fetchAccountDetails(@NotBlank String accountNumber) throws EntityNotFoundException {
+    public Account fetchAccountDetails(@NotBlank String accountNumber, boolean complete)
+        throws EntityNotFoundException {
         AccountEntity foundAccount = throwEntityNotFoundExceptionIfNotPresentElseReturnValue(
             accountsRepository.findByAccountNumber(accountNumber));
         return modelMapper.map(foundAccount, Account.class);

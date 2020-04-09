@@ -12,10 +12,12 @@ import cc.vivp.bankrupt.model.db.TransferEntity;
 import cc.vivp.bankrupt.repository.AccountsRepository;
 import cc.vivp.bankrupt.repository.TransfersRepository;
 import cc.vivp.bankrupt.util.MessageKeys;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 
 @Slf4j
 public class TransferEvent extends DomainEvent<TransferReceipt> {
@@ -23,13 +25,16 @@ public class TransferEvent extends DomainEvent<TransferReceipt> {
     private final TransferCommand transferCommand;
     private final AccountsRepository accountsRepository;
     private final TransfersRepository transfersRepository;
+    private final ModelMapper modelMapper;
 
     public TransferEvent(final LocalDateTime occurred, final TransferCommand transferCommand,
-        final AccountsRepository accountsRepository, final TransfersRepository transfersRepository) {
+        final AccountsRepository accountsRepository, final TransfersRepository transfersRepository,
+        final ModelMapper modelMapper) {
         super(occurred);
         this.transferCommand = transferCommand;
         this.accountsRepository = accountsRepository;
         this.transfersRepository = transfersRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -51,29 +56,37 @@ public class TransferEvent extends DomainEvent<TransferReceipt> {
             throw new TransferException(MessageKeys.ACCOUNT_NOT_FOUND);
         }
 
-        source.setBalance(source.getBalance() - transferCommand.getAmount());
-        target.setBalance(target.getBalance() + transferCommand.getAmount());
+        long transferAmount = convertToCentsIfApplicable(transferCommand.getAmount(),
+            transferCommand.isAmountInCents());
+        source.setBalance(source.getBalance() - transferAmount);
+        target.setBalance(target.getBalance() + transferAmount);
 
         String paymentReference = UUID.randomUUID().toString();
 
         accountsRepository.save(source);
-        TransferEntity transferEntity = new TransferEntity(paymentReference, transferCommand.getSource(),
-            Math.negateExact(transferCommand.getAmount()), transferCommand.getTarget(),
+        TransferEntity transferEntity = new TransferEntity(paymentReference, source,
+            Math.negateExact(transferAmount), target,
             transferCommand.getDescription(), recorded);
         transfersRepository.save(transferEntity);
         log.info("{};{};{};{};{};{};{}", occurred, recorded, paymentReference, transferCommand.getSource(),
-            Math.negateExact(transferCommand.getAmount()), transferCommand.getTarget(),
+            Math.negateExact(transferAmount), transferCommand.getTarget(),
             transferCommand.getDescription());
 
         accountsRepository.save(target);
-        transferEntity = new TransferEntity(paymentReference, transferCommand.getTarget(),
-            transferCommand.getAmount(), transferCommand.getSource(), transferCommand.getDescription(), recorded);
+        transferEntity = new TransferEntity(paymentReference, target,
+            transferAmount, source, transferCommand.getDescription(), recorded);
         transfersRepository.save(transferEntity);
         log.info("{};{};{};{};{};{};{}", occurred, recorded, paymentReference, transferCommand.getTarget(),
-            transferCommand.getAmount(),
+            transferAmount,
             transferCommand.getSource(), transferCommand.getDescription());
 
-        return new TransferReceipt(paymentReference, transferCommand.getSource(), transferCommand.getAmount(),
-            transferCommand.getTarget(), transferCommand.getDescription(), recorded);
+        return new TransferReceipt(paymentReference, source.getAccountNumber(), source.getCustomer().getName(),
+            transferAmount,
+            transferCommand.getTarget(), target.getCustomer().getName(), transferCommand.getDescription(), recorded);
+    }
+
+    private Long convertToCentsIfApplicable(final Long amount, final boolean isAmountInCents) {
+        BigDecimal amountBigDecimal = BigDecimal.valueOf(amount);
+        return isAmountInCents ? amount : amountBigDecimal.multiply(BigDecimal.valueOf(100L)).longValue();
     }
 }

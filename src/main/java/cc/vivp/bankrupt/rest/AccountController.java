@@ -25,8 +25,9 @@ public class AccountController {
   }
 
   @GetMapping("accounts/{accountNumber}")
-  public Account fetchAccountDetails(@PathVariable("accountNumber") String accountNumber)
+  public Account fetchCompleteAccountDetails(@PathVariable("accountNumber") String accountNumber)
       throws EntityNotFoundException {
-    return accountService.fetchAccountDetails(accountNumber);
+    return accountService.fetchAccountDetails(accountNumber, true);
   }
+
 }

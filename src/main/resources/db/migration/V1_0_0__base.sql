@@ -1,3 +1,9 @@
+create table `customers` (
+  `id` bigint not null auto_increment,
+  email varchar(255),
+  name varchar(255),
+  primary key (`id`)
+);
 
 create table `accounts` (
   `id` bigint not null auto_increment,
@@ -5,14 +11,8 @@ create table `accounts` (
   account_type tinyint,
   customer_id bigint,
   balance bigint default 0,
-  primary key (id)
-);
-
-create table `customers` (
-  `id` bigint not null auto_increment,
-  email varchar(255),
-  name varchar(255),
-  primary key (id)
+  primary key (`id`),
+  foreign key (customer_id) references `customers`(`id`)
 );
 
 insert into `customers` (email, name) values ('abc.xyz@bankrupt.com', 'Abc Xyz');
@@ -24,9 +24,10 @@ insert into `accounts` (account_number, account_type, customer_id, balance) valu
 create table `transfers` (
   `id` bigint not null auto_increment,
   payment_reference varchar(36) not null,
-  source varchar(32) not null,
+  source_id bigint not null,
   amount bigint not null,
-  target varchar(32) not null,
+  target_id bigint not null,
   description varchar(255),
-  timestamp datetime not null
+  timestamp datetime not null,
+  foreign key (target_id) references `accounts`(`id`)
 );

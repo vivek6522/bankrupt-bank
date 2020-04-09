@@ -4,6 +4,7 @@ import cc.vivp.bankrupt.exception.AccountCreationException;
 import cc.vivp.bankrupt.model.api.Account;
 import cc.vivp.bankrupt.model.api.AccountCommand;
 import cc.vivp.bankrupt.model.db.AccountEntity;
+import cc.vivp.bankrupt.model.db.CustomerEntity;
 import cc.vivp.bankrupt.repository.AccountsRepository;
 import cc.vivp.bankrupt.repository.CustomersRepository;
 import cc.vivp.bankrupt.util.Constants;
@@ -34,19 +35,18 @@ public class AccountCreationEvent extends DomainEvent<Account> {
     @Override
     public Account process() throws AccountCreationException {
 
-        if (!customersRepository.existsById(accountCommand.getCustomerId())) {
-            throw new AccountCreationException(MessageKeys.ORPHAN_ACCOUNT);
-        }
+        CustomerEntity customerEntity = customersRepository.findById(accountCommand.getCustomerId())
+            .orElseThrow(() -> new AccountCreationException(MessageKeys.ORPHAN_ACCOUNT));
 
         AccountEntity newAccount = new AccountEntity();
         newAccount.setAccountNumber(RandomStringUtils.randomNumeric(Constants.ACCOUNT_NUMBER_LENGTH));
         newAccount.setAccountType(accountCommand.getAccountType());
         newAccount.setBalance(Constants.DEFAULT_BALANCE_CENTS);
-        newAccount.setCustomerId(accountCommand.getCustomerId());
+        newAccount.setCustomer(customerEntity);
 
         accountsRepository.save(newAccount);
         log.info("{};{};{};{};{}", occurred, recorded, newAccount.getAccountNumber(), newAccount.getAccountType(),
-            newAccount.getCustomerId());
+            customerEntity.getId());
 
         return modelMapper.map(newAccount, Account.class);
     }
